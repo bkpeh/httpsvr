@@ -20,52 +20,70 @@ func readjson() map[string]emp {
 	jfile, err := ioutil.ReadFile("json/list.json")
 
 	if err != nil {
-		fmt.Println("Error opening file.")
+		fmt.Println("readjson:Error opening file.", err)
 	}
 
 	err = json.Unmarshal(jfile, &rawlist)
 
 	if err != nil {
-		fmt.Println("Error to Unmarshal.")
+		fmt.Println("readjson:Error to Unmarshal.", err)
 	}
 
 	return rawlist
 }
 
-//Create list to return
-func readinfo(m map[string][]string) []emp {
+//Create list to return for Respond
+func readinfo(m map[string][]string) map[string]emp {
 	rawlist := readjson()
-	plist := []emp{}
+	newlist := map[string]emp{}
 
 	if _, ok := m["Id"]; ok && len(m["Id"]) > 0 {
 		for _, v := range m["Id"] {
-			plist = append(plist, rawlist[v])
+			newlist[v] = rawlist[v]
 		}
 	} else {
-		for _, v := range rawlist {
-			plist = append(plist, v)
-		}
+		newlist = rawlist
 	}
 
-	return plist
+	return newlist
 }
 
 func createinfo() {
 
 }
 
-func deleteinfo() {
+//Delete data from JSON file
+func deleteinfo(by []byte) {
+	plist := map[string]emp{}
+	rawlist := readjson()
+	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
+	defer wfile.Close()
 
+	json.Unmarshal(by, &plist)
+
+	for i, _ := range plist {
+		delete(rawlist, i)
+	}
+
+	jfile, err := json.MarshalIndent(rawlist, "", "	")
+
+	if err != nil {
+		fmt.Println("deleteinfo:Error in Marshal.", err)
+	}
+
+	if _, err = wfile.Write(jfile); err != nil {
+		fmt.Println("deleteinfo:Error in writing to JSON file.", err)
+	}
 }
 
 //Insert data into JSON file
 func updateinfo(by []byte) {
 	plist := map[string]emp{}
-	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY, 0777)
+	rawlist := readjson()
+	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
 	defer wfile.Close()
 
 	json.Unmarshal(by, &plist)
-	rawlist := readjson()
 
 	for i, v := range plist {
 		rawlist[i] = v
@@ -74,11 +92,11 @@ func updateinfo(by []byte) {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		fmt.Println("Error in Marshal.")
+		fmt.Println("updateinfo:Error in Marshal.", err)
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		fmt.Println("Error in writing to JSON file.")
+		fmt.Println("updateinfo:Error in writing to JSON file.", err)
 	}
 }
 
@@ -90,7 +108,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		err := json.NewEncoder(w).Encode(readinfo(r.URL.Query()))
 
 		if err != nil {
-			fmt.Fprintf(w, "Error encoding")
+			fmt.Println("index:GET:Error encoding", err)
 		}
 
 	case "POST":
@@ -99,15 +117,22 @@ func index(w http.ResponseWriter, r *http.Request) {
 		by, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
-			fmt.Println("Error reading body")
+			fmt.Println("index:PUT:Error reading body", err)
 		}
 
 		updateinfo(by)
 
 	case "DELETE":
+		by, err := ioutil.ReadAll(r.Body)
+
+		if err != nil {
+			fmt.Println("index:DELETE:Error reading body", err)
+		}
+
+		deleteinfo(by)
 
 	default:
-		fmt.Fprintf(w, "Default")
+		fmt.Println("Default")
 
 	}
 }

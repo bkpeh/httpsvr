@@ -29,12 +29,6 @@
 		"Id": 1030,
 		"Dept": "D3"
 	},
-	"1040": {
-		"Fname": "Olsen",
-		"Lname": "Kim",
-		"Id": 1030,
-		"Dept": "D1"
-	},
 	"1050": {
 		"Fname": "Toby",
 		"Lname": "Ker",
