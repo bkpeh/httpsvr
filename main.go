@@ -5,6 +5,7 @@ import "net/http"
 import "encoding/json"
 import "io/ioutil"
 import "os"
+import "net/url"
 
 type emp struct {
 	Fname string `json:"Fname"`
@@ -33,12 +34,12 @@ func readjson() map[string]emp {
 }
 
 //Create list to return for Respond
-func readinfo(m map[string][]string) map[string]emp {
+func readinfo(q url.Values) map[string]emp {
 	rawlist := readjson()
 	newlist := map[string]emp{}
 
-	if _, ok := m["Id"]; ok && len(m["Id"]) > 0 {
-		for _, v := range m["Id"] {
+	if _, ok := q["Id"]; ok && len(q) > 0 {
+		for _, v := range q["Id"] {
 			newlist[v] = rawlist[v]
 		}
 	} else {
@@ -53,17 +54,45 @@ func createinfo() {
 }
 
 //Delete data from JSON file
-func deleteinfo(by []byte) {
+func deleteinfo(a interface{}) {
 	plist := map[string]emp{}
 	rawlist := readjson()
-	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
-	defer wfile.Close()
 
-	json.Unmarshal(by, &plist)
+	switch a.(type) {
+	case []byte:
+		err := json.Unmarshal(a.([]byte), &plist)
 
-	for i, _ := range plist {
-		delete(rawlist, i)
+		//Invalid JSON data
+		if err != nil {
+			fmt.Println("deleteinfo:Error in Marshal.", err)
+			return
+		}
+
+		for i, _ := range plist {
+			delete(rawlist, i)
+		}
+	case url.Values:
+		param := a.(url.Values)
+
+		if len(param) == 0 {
+			fmt.Println("deleteinfo:Empty url.Values.")
+			return
+		}
+
+		if _, ok := param["Id"]; ok && len(param) > 0 {
+			for _, v := range param["Id"] {
+				delete(rawlist, v)
+			}
+		}
 	}
+
+	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
+
+	if err != nil {
+		fmt.Println("deleteinfo:Error in OpenFile.", err)
+	}
+
+	defer wfile.Close()
 
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
@@ -79,11 +108,18 @@ func deleteinfo(by []byte) {
 //Insert data into JSON file
 func updateinfo(by []byte) {
 	plist := map[string]emp{}
+
+	err := json.Unmarshal(by, &plist)
+
+	//Invalid JSON data
+	if err != nil {
+		fmt.Println("updateinfo:Error in Marshal.", err)
+		return
+	}
+
 	rawlist := readjson()
 	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
 	defer wfile.Close()
-
-	json.Unmarshal(by, &plist)
 
 	for i, v := range plist {
 		rawlist[i] = v
@@ -123,13 +159,19 @@ func index(w http.ResponseWriter, r *http.Request) {
 		updateinfo(by)
 
 	case "DELETE":
-		by, err := ioutil.ReadAll(r.Body)
-
-		if err != nil {
-			fmt.Println("index:DELETE:Error reading body", err)
+		if len(r.URL.Query()) > 0 {
+			deleteinfo(r.URL.Query())
 		}
 
-		deleteinfo(by)
+		if r.Header.Get("Content-type") == "application/json" {
+			by, err := ioutil.ReadAll(r.Body)
+
+			if err != nil {
+				fmt.Println("index:PUT:Error reading body", err)
+			}
+
+			deleteinfo(by)
+		}
 
 	default:
 		fmt.Println("Default")
