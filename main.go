@@ -1,11 +1,13 @@
 package main
 
-import "fmt"
-import "net/http"
-import "encoding/json"
-import "io/ioutil"
-import "os"
-import "net/url"
+import (
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"net/url"
+	"os"
+)
 
 type emp struct {
 	Fname string `json:"Fname"`
@@ -14,6 +16,11 @@ type emp struct {
 	Dept  string `json:"Dept"`
 }
 
+//For logging
+var logfile *os.File
+var infolog *log.Logger
+var errlog *log.Logger
+
 //Read from JSON file
 func readjson() map[string]emp {
 	rawlist := map[string]emp{}
@@ -21,13 +28,13 @@ func readjson() map[string]emp {
 	jfile, err := ioutil.ReadFile("json/list.json")
 
 	if err != nil {
-		fmt.Println("readjson:Error opening file.", err)
+		errlog.Println("readjson:Error opening file.", err.Error())
 	}
 
 	err = json.Unmarshal(jfile, &rawlist)
 
 	if err != nil {
-		fmt.Println("readjson:Error to Unmarshal.", err)
+		errlog.Println("deleteinfo:Error in Unmarshal.", err.Error())
 	}
 
 	return rawlist
@@ -40,11 +47,15 @@ func readinfo(q url.Values) map[string]emp {
 
 	if _, ok := q["Id"]; ok && len(q) > 0 {
 		for _, v := range q["Id"] {
-			newlist[v] = rawlist[v]
+			if _, ok := rawlist[v]; ok {
+				newlist[v] = rawlist[v]
+			}
 		}
 	} else {
 		newlist = rawlist
 	}
+
+	infolog.Println("readinfo:Read", newlist)
 
 	return newlist
 }
@@ -64,7 +75,7 @@ func deleteinfo(a interface{}) {
 
 		//Invalid JSON data
 		if err != nil {
-			fmt.Println("deleteinfo:Error in Marshal.", err)
+			errlog.Println("deleteinfo:Error in Marshal.", err.Error())
 			return
 		}
 
@@ -75,12 +86,13 @@ func deleteinfo(a interface{}) {
 		param := a.(url.Values)
 
 		if len(param) == 0 {
-			fmt.Println("deleteinfo:Empty url.Values.")
+			infolog.Println("deleteinfo:Empty url.Values.")
 			return
 		}
 
 		if _, ok := param["Id"]; ok && len(param) > 0 {
 			for _, v := range param["Id"] {
+				infolog.Println("deleteinfo:Delete", rawlist[v])
 				delete(rawlist, v)
 			}
 		}
@@ -89,7 +101,7 @@ func deleteinfo(a interface{}) {
 	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
 
 	if err != nil {
-		fmt.Println("deleteinfo:Error in OpenFile.", err)
+		errlog.Println("deleteinfo:Error in OpenFile.", err.Error())
 	}
 
 	defer wfile.Close()
@@ -97,11 +109,11 @@ func deleteinfo(a interface{}) {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		fmt.Println("deleteinfo:Error in Marshal.", err)
+		errlog.Println("deleteinfo:Error in Marshal.", err.Error())
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		fmt.Println("deleteinfo:Error in writing to JSON file.", err)
+		errlog.Println("deleteinfo:Error in writing to JSON file.", err.Error())
 	}
 }
 
@@ -113,7 +125,7 @@ func updateinfo(by []byte) {
 
 	//Invalid JSON data
 	if err != nil {
-		fmt.Println("updateinfo:Error in Marshal.", err)
+		errlog.Println("updateinfo:Error in Unmarshal.", err.Error())
 		return
 	}
 
@@ -128,11 +140,11 @@ func updateinfo(by []byte) {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		fmt.Println("updateinfo:Error in Marshal.", err)
+		errlog.Println("updateinfo:Error in Marshal.", err.Error())
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		fmt.Println("updateinfo:Error in writing to JSON file.", err)
+		errlog.Println("updateinfo:Error in writing to JSON file.", err.Error())
 	}
 }
 
@@ -144,16 +156,24 @@ func index(w http.ResponseWriter, r *http.Request) {
 		err := json.NewEncoder(w).Encode(readinfo(r.URL.Query()))
 
 		if err != nil {
-			fmt.Println("index:GET:Error encoding", err)
+			errlog.Println("index:GET:Error encoding.", err.Error())
 		}
 
 	case "POST":
+		if len(r.URL.Query()) > 0 || r.Header.Get("Content-type") == "application/x-www-form-urlencoded" {
+			r.ParseForm()
+			err := json.NewEncoder(w).Encode(readinfo(r.Form))
+
+			if err != nil {
+				errlog.Println("index:POST:Error encoding.", err.Error())
+			}
+		}
 
 	case "PUT":
 		by, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
-			fmt.Println("index:PUT:Error reading body", err)
+			errlog.Println("index:PUT:Error reading body.", err.Error())
 		}
 
 		updateinfo(by)
@@ -167,27 +187,40 @@ func index(w http.ResponseWriter, r *http.Request) {
 			by, err := ioutil.ReadAll(r.Body)
 
 			if err != nil {
-				fmt.Println("index:PUT:Error reading body", err)
+				errlog.Println("index:PUT:Error reading body.", err.Error())
 			}
 
 			deleteinfo(by)
 		}
 
 	default:
-		fmt.Println("Default")
+		infolog.Println("index:Default")
 
 	}
 }
 
 func init() {
+	logfile, err := os.OpenFile("logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
+	if err != nil {
+		log.Println(err)
+	}
+
+	infolog = log.New(logfile, "INFO: ", log.LstdFlags)
+	errlog = log.New(logfile, "ERROR: ", log.LstdFlags)
+
+	infolog.Println("init:Start Log")
 }
 
 func main() {
-
 	http.HandleFunc("/", index)
+
+	//Defer closing of logfile initalise in init()
+	defer logfile.Close()
 
 	err := http.ListenAndServe(":8080", nil)
 
-	fmt.Println(err)
+	if err != nil {
+		errlog.Println("Main:", err.Error())
+	}
 }
