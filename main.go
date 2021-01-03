@@ -3,10 +3,11 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
+
+	logging "github.com/httpsvr/util"
 )
 
 type emp struct {
@@ -16,11 +17,6 @@ type emp struct {
 	Dept  string `json:"Dept"`
 }
 
-//For logging
-var logfile *os.File
-var infolog *log.Logger
-var errlog *log.Logger
-
 //Read from JSON file
 func readjson() map[string]emp {
 	rawlist := map[string]emp{}
@@ -28,13 +24,13 @@ func readjson() map[string]emp {
 	jfile, err := ioutil.ReadFile("json/list.json")
 
 	if err != nil {
-		errlog.Println("readjson:Error opening file.", err.Error())
+		logging.LogError("readjson:Error opening file:" + err.Error())
 	}
 
 	err = json.Unmarshal(jfile, &rawlist)
 
 	if err != nil {
-		errlog.Println("deleteinfo:Error in Unmarshal.", err.Error())
+		logging.LogError("deleteinfo:Error in Unmarshal:" + err.Error())
 	}
 
 	return rawlist
@@ -55,7 +51,7 @@ func readinfo(q url.Values) map[string]emp {
 		newlist = rawlist
 	}
 
-	infolog.Println("readinfo:Read", newlist)
+	logging.LogInfo(newlist)
 
 	return newlist
 }
@@ -65,7 +61,8 @@ func createinfo() {
 }
 
 //Delete data from JSON file
-func deleteinfo(a interface{}) {
+func deleteinfo(a interface{}) int {
+	var code int
 	plist := map[string]emp{}
 	rawlist := readjson()
 
@@ -75,33 +72,55 @@ func deleteinfo(a interface{}) {
 
 		//Invalid JSON data
 		if err != nil {
-			errlog.Println("deleteinfo:Error in Marshal.", err.Error())
-			return
+			logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+			code = http.StatusBadRequest
 		}
 
+		code = http.StatusNotFound
 		for i, _ := range plist {
-			delete(rawlist, i)
+			_, ok := rawlist[i]
+
+			if ok {
+				delete(rawlist, i)
+				code = http.StatusNoContent
+			}
 		}
 	case url.Values:
 		param := a.(url.Values)
 
 		if len(param) == 0 {
-			infolog.Println("deleteinfo:Empty url.Values.")
-			return
+			logging.LogInfo("deleteinfo:Empty url.Values.")
+			code = http.StatusBadRequest
 		}
 
 		if _, ok := param["Id"]; ok && len(param) > 0 {
+			code = http.StatusNotFound
+
 			for _, v := range param["Id"] {
-				infolog.Println("deleteinfo:Delete", rawlist[v])
-				delete(rawlist, v)
+				_, ok := rawlist[v]
+
+				if ok {
+					logging.LogInfo("deleteinfo:Delete:" + v)
+					delete(rawlist, v)
+					code = http.StatusNoContent
+				}
 			}
+		} else {
+			code = http.StatusBadRequest
 		}
+	default:
+		code = http.StatusBadRequest
+	}
+
+	if code == http.StatusBadRequest || code == http.StatusNotFound {
+		return code
 	}
 
 	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
 
 	if err != nil {
-		errlog.Println("deleteinfo:Error in OpenFile.", err.Error())
+		logging.LogError("deleteinfo:Error in OpenFile:" + err.Error())
+		code = http.StatusInternalServerError
 	}
 
 	defer wfile.Close()
@@ -109,24 +128,28 @@ func deleteinfo(a interface{}) {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		errlog.Println("deleteinfo:Error in Marshal.", err.Error())
+		logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+		code = http.StatusInternalServerError
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		errlog.Println("deleteinfo:Error in writing to JSON file.", err.Error())
+		logging.LogError("deleteinfo:Error in writing to JSON file:" + err.Error())
+		code = http.StatusInternalServerError
 	}
+
+	return code
 }
 
 //Insert data into JSON file
-func updateinfo(by []byte) {
+func updateinfo(by []byte) int {
+	var code int = http.StatusCreated
 	plist := map[string]emp{}
-
 	err := json.Unmarshal(by, &plist)
 
 	//Invalid JSON data
 	if err != nil {
-		errlog.Println("updateinfo:Error in Unmarshal.", err.Error())
-		return
+		logging.LogError("updateinfo:Error in Unmarshal:" + err.Error())
+		return http.StatusBadRequest
 	}
 
 	rawlist := readjson()
@@ -134,18 +157,28 @@ func updateinfo(by []byte) {
 	defer wfile.Close()
 
 	for i, v := range plist {
+		_, ok := rawlist[i]
+
+		if ok {
+			//Update. Set to StatusOK
+			code = http.StatusOK
+		}
 		rawlist[i] = v
 	}
 
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		errlog.Println("updateinfo:Error in Marshal.", err.Error())
+		logging.LogError("updateinfo:Error in Marshal:" + err.Error())
+		code = http.StatusBadRequest
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		errlog.Println("updateinfo:Error in writing to JSON file.", err.Error())
+		logging.LogError("updateinfo:Error in writing to JSON file:" + err.Error())
+		code = http.StatusInternalServerError
 	}
+
+	return code
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -153,74 +186,89 @@ func index(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 
 	case "GET":
-		err := json.NewEncoder(w).Encode(readinfo(r.URL.Query()))
+		resp := readinfo(r.URL.Query())
 
-		if err != nil {
-			errlog.Println("index:GET:Error encoding.", err.Error())
+		if len(resp) <= 0 {
+			logging.LogInfo("index:GET:Not Found")
+			w.WriteHeader(http.StatusNotFound)
+		} else {
+			err := json.NewEncoder(w).Encode(resp)
+
+			if err != nil {
+				logging.LogError("index:GET:Error encoding:" + err.Error())
+				w.WriteHeader(http.StatusBadRequest)
+			}
 		}
 
 	case "POST":
 		if len(r.URL.Query()) > 0 || r.Header.Get("Content-type") == "application/x-www-form-urlencoded" {
 			r.ParseForm()
-			err := json.NewEncoder(w).Encode(readinfo(r.Form))
+			resp := readinfo(r.Form)
+
+			if len(resp) <= 0 {
+				logging.LogInfo("index:POST:Not Found")
+				w.WriteHeader(http.StatusNotFound)
+			} else {
+				err := json.NewEncoder(w).Encode(resp)
+
+				if err != nil {
+					logging.LogError("index:POST:Error encoding:" + err.Error())
+					w.WriteHeader(http.StatusBadRequest)
+				}
+			}
+		} else if r.Header.Get("Content-type") == "application/json" {
+			by, err := ioutil.ReadAll(r.Body)
 
 			if err != nil {
-				errlog.Println("index:POST:Error encoding.", err.Error())
+				logging.LogError("index:POST:Error reading body:" + err.Error())
+				w.WriteHeader(http.StatusBadRequest)
+			} else {
+				w.WriteHeader(updateinfo(by))
 			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
 
 	case "PUT":
 		by, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
-			errlog.Println("index:PUT:Error reading body.", err.Error())
+			logging.LogError("index:PUT:Error reading body:" + err.Error())
+			w.WriteHeader(http.StatusBadRequest)
+		} else {
+			w.WriteHeader(updateinfo(by))
 		}
-
-		updateinfo(by)
 
 	case "DELETE":
 		if len(r.URL.Query()) > 0 {
-			deleteinfo(r.URL.Query())
-		}
-
-		if r.Header.Get("Content-type") == "application/json" {
+			w.WriteHeader(deleteinfo(r.URL.Query()))
+		} else if r.Header.Get("Content-type") == "application/json" {
 			by, err := ioutil.ReadAll(r.Body)
 
 			if err != nil {
-				errlog.Println("index:PUT:Error reading body.", err.Error())
+				logging.LogError("index:PUT:Error reading body:" + err.Error())
+				w.WriteHeader(http.StatusBadRequest)
+			} else {
+				w.WriteHeader(deleteinfo(by))
 			}
-
-			deleteinfo(by)
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
 		}
 
 	default:
-		infolog.Println("index:Default")
+		logging.LogInfo("index:Default")
 
 	}
-}
-
-func init() {
-	logfile, err := os.OpenFile("logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-
-	if err != nil {
-		log.Println(err)
-	}
-
-	infolog = log.New(logfile, "INFO: ", log.LstdFlags)
-	errlog = log.New(logfile, "ERROR: ", log.LstdFlags)
-
-	infolog.Println("init:Start Log")
 }
 
 func main() {
 	http.HandleFunc("/", index)
 
-	//Defer closing of logfile initalise in init()
-	defer logfile.Close()
+	defer logging.GetLogFile().Close()
 
 	err := http.ListenAndServe(":8080", nil)
 
 	if err != nil {
-		errlog.Println("Main:", err.Error())
+		logging.LogError("Main:" + err.Error())
 	}
 }
