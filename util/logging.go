@@ -10,7 +10,7 @@ var logfile *os.File
 var infolog *log.Logger
 var errlog *log.Logger
 
-func init() {
+func openFile() {
 	logfile, err := os.OpenFile("logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
@@ -24,11 +24,17 @@ func init() {
 }
 
 func LogInfo(i interface{}) {
+	openFile()
 	infolog.Println(i)
+	logfile.Sync()
+	logfile.Close()
 }
 
 func LogError(i interface{}) {
+	openFile()
 	errlog.Println(i)
+	logfile.Sync()
+	logfile.Close()
 }
 
 func GetLogFile() *os.File {

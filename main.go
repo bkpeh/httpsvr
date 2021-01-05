@@ -228,7 +228,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusBadRequest)
 		}
-
+		logging.LogInfo("POST SUCCESS")
 	case "PUT":
 		by, err := ioutil.ReadAll(r.Body)
 
@@ -264,7 +264,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 func main() {
 	http.HandleFunc("/", index)
 
-	defer logging.GetLogFile().Close()
+	//defer logging.GetLogFile().Close()
 
 	err := http.ListenAndServe(":8080", nil)
 
