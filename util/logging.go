@@ -11,7 +11,7 @@ var infolog *log.Logger
 var errlog *log.Logger
 
 func openFile() {
-	logfile, err := os.OpenFile("logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	logfile, err := os.OpenFile("../logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		log.Println(err)

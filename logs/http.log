@@ -1060,3 +1060,171 @@ INFO: 2021/01/05 16:48:47 init:Start Log
 INFO: 2021/01/05 16:48:47 map[1030:{Jack Koh 1030 D3}]
 INFO: 2021/01/05 16:48:47 init:Start Log
 INFO: 2021/01/05 16:48:47 POST SUCCESS
+INFO: 2021/01/09 21:26:12 init:Start Log
+INFO: 2021/01/09 21:26:12 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:19:23 init:Start Log
+ERROR: 2021/01/09 22:19:23 readjson:Error opening file:open json/list.json: The system cannot find the path specified.
+INFO: 2021/01/09 22:19:23 init:Start Log
+ERROR: 2021/01/09 22:19:23 deleteinfo:Error in Unmarshal:unexpected end of JSON input
+INFO: 2021/01/09 22:19:23 init:Start Log
+INFO: 2021/01/09 22:19:23 map[]
+INFO: 2021/01/09 22:19:23 init:Start Log
+INFO: 2021/01/09 22:19:23 index:GET:Not Found
+INFO: 2021/01/09 22:20:43 init:Start Log
+ERROR: 2021/01/09 22:20:43 readjson:Error opening file:open json/list.json: The system cannot find the path specified.
+INFO: 2021/01/09 22:20:43 init:Start Log
+ERROR: 2021/01/09 22:20:43 deleteinfo:Error in Unmarshal:unexpected end of JSON input
+INFO: 2021/01/09 22:20:43 init:Start Log
+INFO: 2021/01/09 22:20:43 map[]
+INFO: 2021/01/09 22:20:43 init:Start Log
+INFO: 2021/01/09 22:20:43 index:GET:Not Found
+INFO: 2021/01/09 22:21:21 init:Start Log
+ERROR: 2021/01/09 22:21:21 readjson:Error opening file:open json/list.json: The system cannot find the path specified.
+INFO: 2021/01/09 22:21:21 init:Start Log
+ERROR: 2021/01/09 22:21:21 deleteinfo:Error in Unmarshal:unexpected end of JSON input
+INFO: 2021/01/09 22:21:21 init:Start Log
+INFO: 2021/01/09 22:21:21 map[]
+INFO: 2021/01/09 22:21:21 init:Start Log
+INFO: 2021/01/09 22:21:21 index:GET:Not Found
+INFO: 2021/01/09 22:21:28 init:Start Log
+ERROR: 2021/01/09 22:21:28 readjson:Error opening file:open json/list.json: The system cannot find the path specified.
+INFO: 2021/01/09 22:21:28 init:Start Log
+ERROR: 2021/01/09 22:21:28 deleteinfo:Error in Unmarshal:unexpected end of JSON input
+INFO: 2021/01/09 22:21:28 init:Start Log
+INFO: 2021/01/09 22:21:28 map[]
+INFO: 2021/01/09 22:21:28 init:Start Log
+INFO: 2021/01/09 22:21:28 index:GET:Not Found
+INFO: 2021/01/09 22:44:48 init:Start Log
+INFO: 2021/01/09 22:44:48 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:45:25 init:Start Log
+INFO: 2021/01/09 22:45:25 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:46:12 init:Start Log
+INFO: 2021/01/09 22:46:12 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:46:35 init:Start Log
+INFO: 2021/01/09 22:46:35 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:46:58 init:Start Log
+INFO: 2021/01/09 22:46:58 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:46:58 init:Start Log
+ERROR: 2021/01/09 22:46:58 TestIndex:
+INFO: 2021/01/09 22:47:24 init:Start Log
+INFO: 2021/01/09 22:47:24 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:48:19 init:Start Log
+INFO: 2021/01/09 22:48:19 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:48:41 init:Start Log
+INFO: 2021/01/09 22:48:41 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:48:56 init:Start Log
+INFO: 2021/01/09 22:48:56 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:49:13 init:Start Log
+INFO: 2021/01/09 22:49:13 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 22:50:02 init:Start Log
+INFO: 2021/01/09 22:50:02 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:06:59 init:Start Log
+INFO: 2021/01/09 23:06:59 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:06:59 init:Start Log
+ERROR: 2021/01/09 23:06:59 TestIndex:
+INFO: 2021/01/09 23:07:13 init:Start Log
+INFO: 2021/01/09 23:07:13 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:07:13 init:Start Log
+ERROR: 2021/01/09 23:07:13 TestIndex:
+INFO: 2021/01/09 23:18:49 init:Start Log
+INFO: 2021/01/09 23:18:49 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:18:49 init:Start Log
+ERROR: 2021/01/09 23:18:49 TestIndex:
+INFO: 2021/01/09 23:18:55 init:Start Log
+INFO: 2021/01/09 23:18:55 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:18:55 init:Start Log
+ERROR: 2021/01/09 23:18:55 TestIndex:
+INFO: 2021/01/09 23:31:25 init:Start Log
+INFO: 2021/01/09 23:31:25 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:31:29 init:Start Log
+INFO: 2021/01/09 23:31:29 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:31:38 init:Start Log
+INFO: 2021/01/09 23:31:38 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/09 23:31:58 init:Start Log
+INFO: 2021/01/09 23:31:58 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:18:35 init:Start Log
+INFO: 2021/01/10 00:18:36 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:18:36 init:Start Log
+ERROR: 2021/01/10 00:18:36 TestIndex:
+INFO: 2021/01/10 00:18:57 init:Start Log
+INFO: 2021/01/10 00:18:57 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:18:57 init:Start Log
+ERROR: 2021/01/10 00:18:57 TestIndex:
+INFO: 2021/01/10 00:20:31 init:Start Log
+INFO: 2021/01/10 00:20:31 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:20:31 init:Start Log
+ERROR: 2021/01/10 00:20:31 TestIndex:
+INFO: 2021/01/10 00:20:39 init:Start Log
+INFO: 2021/01/10 00:20:39 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:20:39 init:Start Log
+ERROR: 2021/01/10 00:20:39 TestIndex:
+INFO: 2021/01/10 00:21:23 init:Start Log
+INFO: 2021/01/10 00:21:23 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:21:23 init:Start Log
+ERROR: 2021/01/10 00:21:23 TestIndex:
+INFO: 2021/01/10 00:43:41 init:Start Log
+INFO: 2021/01/10 00:43:41 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:43:41 init:Start Log
+ERROR: 2021/01/10 00:43:41 TestIndex:
+INFO: 2021/01/10 00:44:03 init:Start Log
+INFO: 2021/01/10 00:44:03 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 00:44:03 init:Start Log
+ERROR: 2021/01/10 00:44:03 TestIndex:
+INFO: 2021/01/10 00:44:19 init:Start Log
+INFO: 2021/01/10 00:44:19 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 21:58:41 init:Start Log
+INFO: 2021/01/10 21:58:41 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 21:58:41 init:Start Log
+ERROR: 2021/01/10 21:58:41 TestIndex:
+INFO: 2021/01/10 21:58:41 init:Start Log
+INFO: 2021/01/10 21:58:41 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 21:58:41 init:Start Log
+ERROR: 2021/01/10 21:58:41 TestIndex:
+INFO: 2021/01/10 22:06:03 init:Start Log
+INFO: 2021/01/10 22:06:03 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:06:03 init:Start Log
+INFO: 2021/01/10 22:06:03 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:06:03 init:Start Log
+ERROR: 2021/01/10 22:06:03 TestIndex:
+INFO: 2021/01/10 22:06:25 init:Start Log
+INFO: 2021/01/10 22:06:25 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:06:25 init:Start Log
+INFO: 2021/01/10 22:06:25 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:06:25 init:Start Log
+ERROR: 2021/01/10 22:06:25 TestIndex:
+INFO: 2021/01/10 22:21:16 init:Start Log
+INFO: 2021/01/10 22:21:16 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:21:16 init:Start Log
+ERROR: 2021/01/10 22:21:16 TestIndex:
+INFO: 2021/01/10 22:21:16 init:Start Log
+INFO: 2021/01/10 22:21:16 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:21:16 init:Start Log
+ERROR: 2021/01/10 22:21:16 TestIndex:
+INFO: 2021/01/10 22:21:21 init:Start Log
+INFO: 2021/01/10 22:21:21 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:21:21 init:Start Log
+INFO: 2021/01/10 22:21:21 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:33:18 init:Start Log
+INFO: 2021/01/10 22:33:18 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:35:35 init:Start Log
+INFO: 2021/01/10 22:35:35 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 22:54:36 init:Start Log
+INFO: 2021/01/10 22:54:36 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 23:12:17 init:Start Log
+INFO: 2021/01/10 23:12:18 map[1020:{Mary Ong 1020 D2}]
+INFO: 2021/01/10 23:12:18 init:Start Log
+ERROR: 2021/01/10 23:12:18 TestIndex:
+INFO: 2021/01/10 23:13:20 init:Start Log
+INFO: 2021/01/10 23:13:20 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 23:13:20 init:Start Log
+INFO: 2021/01/10 23:13:20 map[1020:{Mary Ong 1020 D2}]
+INFO: 2021/01/10 23:13:20 init:Start Log
+ERROR: 2021/01/10 23:13:20 TestIndex:
+INFO: 2021/01/10 23:13:25 init:Start Log
+INFO: 2021/01/10 23:13:25 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 23:13:25 init:Start Log
+INFO: 2021/01/10 23:13:25 map[1020:{Mary Ong 1020 D2}]
+INFO: 2021/01/10 23:16:54 init:Start Log
+INFO: 2021/01/10 23:16:54 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/01/10 23:16:54 init:Start Log
+INFO: 2021/01/10 23:16:54 map[1020:{Mary Ong 1020 D2}]
