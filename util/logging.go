@@ -10,8 +10,8 @@ var logfile *os.File
 var infolog *log.Logger
 var errlog *log.Logger
 
-func openFile() {
-	logfile, err := os.OpenFile("../logs/http.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+func openFile(s string) {
+	logfile, err := os.OpenFile(s, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 
 	if err != nil {
 		log.Println(err)
@@ -23,15 +23,15 @@ func openFile() {
 	infolog.Println("init:Start Log")
 }
 
-func LogInfo(i interface{}) {
-	openFile()
+func LogInfo(path string, i interface{}) {
+	openFile(path)
 	infolog.Println(i)
 	logfile.Sync()
 	logfile.Close()
 }
 
-func LogError(i interface{}) {
-	openFile()
+func LogError(path string, i interface{}) {
+	openFile(path)
 	errlog.Println(i)
 	logfile.Sync()
 	logfile.Close()

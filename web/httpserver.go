@@ -2,6 +2,7 @@ package httpserver
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -21,16 +22,16 @@ type emp struct {
 func readjson() map[string]emp {
 	rawlist := map[string]emp{}
 
-	jfile, err := ioutil.ReadFile("../json/list.json")
+	jfile, err := ioutil.ReadFile("json/list.json")
 
 	if err != nil {
-		logging.LogError("readjson:Error opening file:" + err.Error())
+		logging.LogError("logs/http.log", "readjson:Error opening file:"+err.Error())
 	}
 
 	err = json.Unmarshal(jfile, &rawlist)
 
 	if err != nil {
-		logging.LogError("deleteinfo:Error in Unmarshal:" + err.Error())
+		logging.LogError("logs/http.log", "deleteinfo:Error in Unmarshal:"+err.Error())
 	}
 
 	return rawlist
@@ -51,7 +52,7 @@ func readinfo(q url.Values) map[string]emp {
 		newlist = rawlist
 	}
 
-	logging.LogInfo(newlist)
+	logging.LogInfo("logs/http.log", newlist)
 
 	return newlist
 }
@@ -72,7 +73,7 @@ func deleteinfo(a interface{}) int {
 
 		//Invalid JSON data
 		if err != nil {
-			logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+			logging.LogError("logs/http.log", "deleteinfo:Error in Marshal:"+err.Error())
 			code = http.StatusBadRequest
 		}
 
@@ -89,7 +90,7 @@ func deleteinfo(a interface{}) int {
 		param := a.(url.Values)
 
 		if len(param) == 0 {
-			logging.LogInfo("deleteinfo:Empty url.Values.")
+			logging.LogInfo("logs/http.log", "deleteinfo:Empty url.Values.")
 			code = http.StatusBadRequest
 		}
 
@@ -100,7 +101,7 @@ func deleteinfo(a interface{}) int {
 				_, ok := rawlist[v]
 
 				if ok {
-					logging.LogInfo("deleteinfo:Delete:" + v)
+					logging.LogInfo("logs/http.log", "deleteinfo:Delete:"+v)
 					delete(rawlist, v)
 					code = http.StatusNoContent
 				}
@@ -119,7 +120,7 @@ func deleteinfo(a interface{}) int {
 	wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
 
 	if err != nil {
-		logging.LogError("deleteinfo:Error in OpenFile:" + err.Error())
+		logging.LogError("logs/http.log", "deleteinfo:Error in OpenFile:"+err.Error())
 		code = http.StatusInternalServerError
 	}
 
@@ -128,12 +129,12 @@ func deleteinfo(a interface{}) int {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+		logging.LogError("logs/http.log", "deleteinfo:Error in Marshal:"+err.Error())
 		code = http.StatusInternalServerError
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		logging.LogError("deleteinfo:Error in writing to JSON file:" + err.Error())
+		logging.LogError("logs/http.log", "deleteinfo:Error in writing to JSON file:"+err.Error())
 		code = http.StatusInternalServerError
 	}
 
@@ -148,7 +149,7 @@ func updateinfo(by []byte) int {
 
 	//Invalid JSON data
 	if err != nil {
-		logging.LogError("updateinfo:Error in Unmarshal:" + err.Error())
+		logging.LogError("logs/http.log", "updateinfo:Error in Unmarshal:"+err.Error())
 		return http.StatusBadRequest
 	}
 
@@ -169,12 +170,12 @@ func updateinfo(by []byte) int {
 	jfile, err := json.MarshalIndent(rawlist, "", "	")
 
 	if err != nil {
-		logging.LogError("updateinfo:Error in Marshal:" + err.Error())
+		logging.LogError("logs/http.log", "updateinfo:Error in Marshal:"+err.Error())
 		code = http.StatusBadRequest
 	}
 
 	if _, err = wfile.Write(jfile); err != nil {
-		logging.LogError("updateinfo:Error in writing to JSON file:" + err.Error())
+		logging.LogError("logs/http.log", "updateinfo:Error in writing to JSON file:"+err.Error())
 		code = http.StatusInternalServerError
 	}
 
@@ -189,30 +190,31 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		resp := readinfo(r.URL.Query())
 
 		if len(resp) <= 0 {
-			logging.LogInfo("index:GET:Not Found")
+			logging.LogInfo("logs/http.log", "index:GET:Not Found")
 			w.WriteHeader(http.StatusNotFound)
 		} else {
 			err := json.NewEncoder(w).Encode(resp)
 
 			if err != nil {
-				logging.LogError("index:GET:Error encoding:" + err.Error())
+				logging.LogError("logs/http.log", "index:GET:Error encoding:"+err.Error())
 				w.WriteHeader(http.StatusBadRequest)
 			}
 		}
 
 	case "POST":
+		fmt.Println("POST:", r)
 		if len(r.URL.Query()) > 0 || r.Header.Get("Content-type") == "application/x-www-form-urlencoded" {
 			r.ParseForm()
 			resp := readinfo(r.Form)
 
 			if len(resp) <= 0 {
-				logging.LogInfo("index:POST:Not Found")
+				logging.LogInfo("logs/http.log", "index:POST:Not Found")
 				w.WriteHeader(http.StatusNotFound)
 			} else {
 				err := json.NewEncoder(w).Encode(resp)
 
 				if err != nil {
-					logging.LogError("index:POST:Error encoding:" + err.Error())
+					logging.LogError("logs/http.log", "index:POST:Error encoding:"+err.Error())
 					w.WriteHeader(http.StatusBadRequest)
 				}
 			}
@@ -220,7 +222,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 			by, err := ioutil.ReadAll(r.Body)
 
 			if err != nil {
-				logging.LogError("index:POST:Error reading body:" + err.Error())
+				logging.LogError("logs/http.log", "index:POST:Error reading body:"+err.Error())
 				w.WriteHeader(http.StatusBadRequest)
 			} else {
 				w.WriteHeader(updateinfo(by))
@@ -228,12 +230,12 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.WriteHeader(http.StatusBadRequest)
 		}
-		logging.LogInfo("POST SUCCESS")
+		logging.LogInfo("logs/http.log", "POST SUCCESS")
 	case "PUT":
 		by, err := ioutil.ReadAll(r.Body)
 
 		if err != nil {
-			logging.LogError("index:PUT:Error reading body:" + err.Error())
+			logging.LogError("logs/http.log", "index:PUT:Error reading body:"+err.Error())
 			w.WriteHeader(http.StatusBadRequest)
 		} else {
 			w.WriteHeader(updateinfo(by))
@@ -246,7 +248,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 			by, err := ioutil.ReadAll(r.Body)
 
 			if err != nil {
-				logging.LogError("index:PUT:Error reading body:" + err.Error())
+				logging.LogError("logs/http.log", "index:PUT:Error reading body:"+err.Error())
 				w.WriteHeader(http.StatusBadRequest)
 			} else {
 				w.WriteHeader(deleteinfo(by))
@@ -256,7 +258,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 
 	default:
-		logging.LogInfo("index:Default")
+		logging.LogInfo("logs/http.log", "index:Default")
 
 	}
 }

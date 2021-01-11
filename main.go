@@ -16,6 +16,6 @@ func main() {
 	err := http.ListenAndServe(":8080", nil)
 
 	if err != nil {
-		logging.LogError("Main:" + err.Error())
+		logging.LogError("logs/http.log", "Main:"+err.Error())
 	}
 }

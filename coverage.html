@@ -1,0 +1,377 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>httpsvr: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/httpsvr/main.go (57.8%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "encoding/json"
+        "io/ioutil"
+        "net/http"
+        "net/url"
+        "os"
+
+        logging "github.com/httpsvr/util"
+)
+
+type emp struct {
+        Fname string `json:"Fname"`
+        Lname string `json:"Lname"`
+        Id    int    `json:"Id"`
+        Dept  string `json:"Dept"`
+}
+
+//Read from JSON file
+func readjson() map[string]emp <span class="cov8" title="1">{
+        rawlist := map[string]emp{}
+
+        jfile, err := ioutil.ReadFile("json/list.json")
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("readjson:Error opening file:" + err.Error())
+        }</span>
+
+        <span class="cov8" title="1">err = json.Unmarshal(jfile, &amp;rawlist)
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("deleteinfo:Error in Unmarshal:" + err.Error())
+        }</span>
+
+        <span class="cov8" title="1">return rawlist</span>
+}
+
+//Create list to return for Respond
+func readinfo(q url.Values) map[string]emp <span class="cov8" title="1">{
+        rawlist := readjson()
+        newlist := map[string]emp{}
+
+        if _, ok := q["Id"]; ok &amp;&amp; len(q) &gt; 0 </span><span class="cov8" title="1">{
+                for _, v := range q["Id"] </span><span class="cov8" title="1">{
+                        if _, ok := rawlist[v]; ok </span><span class="cov8" title="1">{
+                                newlist[v] = rawlist[v]
+                        }</span>
+                }
+        } else<span class="cov8" title="1"> {
+                newlist = rawlist
+        }</span>
+
+        <span class="cov8" title="1">logging.LogInfo(newlist)
+
+        return newlist</span>
+}
+
+func createinfo() {<span class="cov0" title="0">
+
+}</span>
+
+//Delete data from JSON file
+func deleteinfo(a interface{}) int <span class="cov8" title="1">{
+        var code int
+        plist := map[string]emp{}
+        rawlist := readjson()
+
+        switch a.(type) </span>{
+        case []byte:<span class="cov8" title="1">
+                err := json.Unmarshal(a.([]byte), &amp;plist)
+
+                //Invalid JSON data
+                if err != nil </span><span class="cov0" title="0">{
+                        logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+                        code = http.StatusBadRequest
+                }</span>
+
+                <span class="cov8" title="1">code = http.StatusNotFound
+                for i, _ := range plist </span><span class="cov8" title="1">{
+                        _, ok := rawlist[i]
+
+                        if ok </span><span class="cov8" title="1">{
+                                delete(rawlist, i)
+                                code = http.StatusNoContent
+                        }</span>
+                }
+        case url.Values:<span class="cov8" title="1">
+                param := a.(url.Values)
+
+                if len(param) == 0 </span><span class="cov0" title="0">{
+                        logging.LogInfo("deleteinfo:Empty url.Values.")
+                        code = http.StatusBadRequest
+                }</span>
+
+                <span class="cov8" title="1">if _, ok := param["Id"]; ok &amp;&amp; len(param) &gt; 0 </span><span class="cov8" title="1">{
+                        code = http.StatusNotFound
+
+                        for _, v := range param["Id"] </span><span class="cov8" title="1">{
+                                _, ok := rawlist[v]
+
+                                if ok </span><span class="cov8" title="1">{
+                                        logging.LogInfo("deleteinfo:Delete:" + v)
+                                        delete(rawlist, v)
+                                        code = http.StatusNoContent
+                                }</span>
+                        }
+                } else<span class="cov0" title="0"> {
+                        code = http.StatusBadRequest
+                }</span>
+        default:<span class="cov0" title="0">
+                code = http.StatusBadRequest</span>
+        }
+
+        <span class="cov8" title="1">if code == http.StatusBadRequest || code == http.StatusNotFound </span><span class="cov8" title="1">{
+                return code
+        }</span>
+
+        <span class="cov8" title="1">wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("deleteinfo:Error in OpenFile:" + err.Error())
+                code = http.StatusInternalServerError
+        }</span>
+
+        <span class="cov8" title="1">defer wfile.Close()
+
+        jfile, err := json.MarshalIndent(rawlist, "", "        ")
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("deleteinfo:Error in Marshal:" + err.Error())
+                code = http.StatusInternalServerError
+        }</span>
+
+        <span class="cov8" title="1">if _, err = wfile.Write(jfile); err != nil </span><span class="cov0" title="0">{
+                logging.LogError("deleteinfo:Error in writing to JSON file:" + err.Error())
+                code = http.StatusInternalServerError
+        }</span>
+
+        <span class="cov8" title="1">return code</span>
+}
+
+//Insert data into JSON file
+func updateinfo(by []byte) int <span class="cov8" title="1">{
+        var code int = http.StatusCreated
+        plist := map[string]emp{}
+        err := json.Unmarshal(by, &amp;plist)
+
+        //Invalid JSON data
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("updateinfo:Error in Unmarshal:" + err.Error())
+                return http.StatusBadRequest
+        }</span>
+
+        <span class="cov8" title="1">rawlist := readjson()
+        wfile, err := os.OpenFile("json/list.json", os.O_WRONLY|os.O_TRUNC, 0777)
+        defer wfile.Close()
+
+        for i, v := range plist </span><span class="cov8" title="1">{
+                _, ok := rawlist[i]
+
+                if ok </span><span class="cov8" title="1">{
+                        //Update. Set to StatusOK
+                        code = http.StatusOK
+                }</span>
+                <span class="cov8" title="1">rawlist[i] = v</span>
+        }
+
+        <span class="cov8" title="1">jfile, err := json.MarshalIndent(rawlist, "", "        ")
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("updateinfo:Error in Marshal:" + err.Error())
+                code = http.StatusBadRequest
+        }</span>
+
+        <span class="cov8" title="1">if _, err = wfile.Write(jfile); err != nil </span><span class="cov0" title="0">{
+                logging.LogError("updateinfo:Error in writing to JSON file:" + err.Error())
+                code = http.StatusInternalServerError
+        }</span>
+
+        <span class="cov8" title="1">return code</span>
+}
+
+func index(w http.ResponseWriter, r *http.Request) <span class="cov8" title="1">{
+
+        switch r.Method </span>{
+
+        case "GET":<span class="cov8" title="1">
+                resp := readinfo(r.URL.Query())
+
+                if len(resp) &lt;= 0 </span><span class="cov0" title="0">{
+                        logging.LogInfo("index:GET:Not Found")
+                        w.WriteHeader(http.StatusNotFound)
+                }</span> else<span class="cov8" title="1"> {
+                        err := json.NewEncoder(w).Encode(resp)
+
+                        if err != nil </span><span class="cov0" title="0">{
+                                logging.LogError("index:GET:Error encoding:" + err.Error())
+                                w.WriteHeader(http.StatusBadRequest)
+                        }</span>
+                }
+
+        case "POST":<span class="cov8" title="1">
+                if len(r.URL.Query()) &gt; 0 || r.Header.Get("Content-type") == "application/x-www-form-urlencoded" </span><span class="cov8" title="1">{
+                        r.ParseForm()
+                        resp := readinfo(r.Form)
+
+                        if len(resp) &lt;= 0 </span><span class="cov0" title="0">{
+                                logging.LogInfo("index:POST:Not Found")
+                                w.WriteHeader(http.StatusNotFound)
+                        }</span> else<span class="cov8" title="1"> {
+                                err := json.NewEncoder(w).Encode(resp)
+
+                                if err != nil </span><span class="cov0" title="0">{
+                                        logging.LogError("index:POST:Error encoding:" + err.Error())
+                                        w.WriteHeader(http.StatusBadRequest)
+                                }</span>
+                        }
+                } else<span class="cov0" title="0"> if r.Header.Get("Content-type") == "application/json" </span><span class="cov0" title="0">{
+                        by, err := ioutil.ReadAll(r.Body)
+
+                        if err != nil </span><span class="cov0" title="0">{
+                                logging.LogError("index:POST:Error reading body:" + err.Error())
+                                w.WriteHeader(http.StatusBadRequest)
+                        }</span> else<span class="cov0" title="0"> {
+                                w.WriteHeader(updateinfo(by))
+                        }</span>
+                } else<span class="cov0" title="0"> {
+                        w.WriteHeader(http.StatusBadRequest)
+                }</span>
+                <span class="cov8" title="1">logging.LogInfo("POST SUCCESS")</span>
+        case "PUT":<span class="cov0" title="0">
+                by, err := ioutil.ReadAll(r.Body)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        logging.LogError("index:PUT:Error reading body:" + err.Error())
+                        w.WriteHeader(http.StatusBadRequest)
+                }</span> else<span class="cov0" title="0"> {
+                        w.WriteHeader(updateinfo(by))
+                }</span>
+
+        case "DELETE":<span class="cov0" title="0">
+                if len(r.URL.Query()) &gt; 0 </span><span class="cov0" title="0">{
+                        w.WriteHeader(deleteinfo(r.URL.Query()))
+                }</span> else<span class="cov0" title="0"> if r.Header.Get("Content-type") == "application/json" </span><span class="cov0" title="0">{
+                        by, err := ioutil.ReadAll(r.Body)
+
+                        if err != nil </span><span class="cov0" title="0">{
+                                logging.LogError("index:PUT:Error reading body:" + err.Error())
+                                w.WriteHeader(http.StatusBadRequest)
+                        }</span> else<span class="cov0" title="0"> {
+                                w.WriteHeader(deleteinfo(by))
+                        }</span>
+                } else<span class="cov0" title="0"> {
+                        w.WriteHeader(http.StatusBadRequest)
+                }</span>
+
+        default:<span class="cov0" title="0">
+                logging.LogInfo("index:Default")</span>
+
+        }
+}
+
+func main() <span class="cov0" title="0">{
+        http.HandleFunc("/", index)
+
+        //defer logging.GetLogFile().Close()
+
+        err := http.ListenAndServe(":8080", nil)
+
+        if err != nil </span><span class="cov0" title="0">{
+                logging.LogError("Main:" + err.Error())
+        }</span>
+}
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
