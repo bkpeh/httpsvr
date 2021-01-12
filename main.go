@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-
+	hsvr.SetLog("logs/http.log")
 	http.HandleFunc("/", hsvr.Index)
 
 	//defer logging.GetLogFile().Close()

@@ -9,6 +9,8 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"path/filepath"
+	"strconv"
+	"strings"
 	"testing"
 
 	logging "github.com/bkpeh/httpsvr/util"
@@ -30,6 +32,7 @@ func TestIndex(t *testing.T) {
 		{testname: "test1", method: "GET", header: "", body: "", httpcode: http.StatusOK},
 		{testname: "test2", method: "GET", header: "", body: "../test/t2bodyinput.json", httpcode: http.StatusOK},
 		{testname: "test3", method: "POST", header: "", body: "../test/t3bodyinput.json", httpcode: http.StatusOK},
+		{testname: "test4", method: "POST", header: "../test/t4bodyinput.json", body: "../test/t4bodyinput.json", httpcode: http.StatusOK},
 		//{testname: "PUT"},
 		//{testname: "DELETE"},
 	}
@@ -43,26 +46,40 @@ func TestIndex(t *testing.T) {
 
 			//For request header
 			if v.header != "" {
+				hinput := struct {
+					id    url.Values
+					auth  string
+					ctype string
+				}{}
+				expect, _ := ioutil.ReadFile(v.header)
 
+				json.Unmarshal(expect, &hinput)
+				req = httptest.NewRequest("POST", "http://localhost:8080/", strings.NewReader(hinput.id.Encode()))
+				req.Header.Add("Authorization", hinput.auth)
+				req.Header.Add("Content-Type", hinput.ctype)
+				req.Header.Add("Content-Length", strconv.Itoa(len(hinput.id)))
+				//urlstr := url.Values{}
+
+				//for i, v := range hinput {
+				// if v.(Type) == []string {
+
+				//}
+				//urlstr.Add(i, v)
+				//}
+
+				//req.URL.RawQuery = urlstr.Encode()
 			}
 
 			//For request body
 			if v.body != "" {
-				param := map[string][]string{}
+				param := url.Values{}
 				expect, _ := ioutil.ReadFile(v.body)
 
 				json.Unmarshal(expect, &param)
-				urlstr := url.Values{}
-
-				for i, v := range param {
-					for _, vv := range v {
-						urlstr.Add(i, vv)
-					}
-				}
-
-				req.URL.RawQuery = urlstr.Encode()
+				req.URL.RawQuery = param.Encode()
 			}
 
+			h.SetLog("logs/test.log")
 			h.Index(rec, req)
 			result, _ := ioutil.ReadAll(rec.Body)
 
@@ -76,12 +93,13 @@ func TestIndex(t *testing.T) {
 			expect = bytes.ReplaceAll(expect, []byte("\r"), []byte(""))
 
 			if !bytes.Equal(result, expect) {
-				logging.LogError("../logs/http.log", "TestIndex:Result not expected")
+				logging.LogError("logs/test.log", "TestIndex:"+v.testname+":Result not expected")
 				t.Fail()
 			}
 
 			if rec.Code != v.httpcode {
-				logging.LogError("../logs/http.log", "TestIndex:Http code mismatch")
+				logging.LogError("logs/test.log", "TestIndex:"+v.testname+":Http code mismatch")
+				logging.LogError("logs/test.log", "Expect:"+strconv.Itoa(v.httpcode)+", Result:"+strconv.Itoa(rec.Code))
 				t.Fail()
 			}
 		})

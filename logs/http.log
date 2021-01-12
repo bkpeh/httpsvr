@@ -1718,3 +1718,11 @@ INFO: 2021/01/11 17:57:52 init:Start Log
 INFO: 2021/01/11 17:57:52 POST SUCCESS
 INFO: 2021/01/11 17:58:06 init:Start Log
 ERROR: 2021/01/11 17:58:06 TestIndex:Result not expected
+INFO: 2021/01/12 11:03:15 init:Start Log
+ERROR: 2021/01/12 11:03:15 TestIndex:Result not expected
+INFO: 2021/01/12 11:11:35 init:Start Log
+INFO: 2021/01/12 11:11:35 map[1020:{Mary Ong 1020 D2}]
+INFO: 2021/01/12 11:11:35 init:Start Log
+INFO: 2021/01/12 11:11:35 POST SUCCESS
+INFO: 2021/01/12 11:12:26 init:Start Log
+ERROR: 2021/01/12 11:12:26 TestIndex:Result not expected
