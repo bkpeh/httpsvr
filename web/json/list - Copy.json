@@ -1,0 +1,38 @@
+{
+	"1005": {
+		"Fname": "Jean",
+		"Lname": "Toh",
+		"Id": 1005,
+		"Dept": "D5"
+	},
+	"1010": {
+		"Fname": "Peter",
+		"Lname": "Tan",
+		"Id": 1010,
+		"Dept": "D1"
+	},
+	"1015": {
+		"Fname": "Jess",
+		"Lname": "Lim",
+		"Id": 1015,
+		"Dept": "D4"
+	},
+	"1020": {
+		"Fname": "Mary",
+		"Lname": "Ong",
+		"Id": 1020,
+		"Dept": "D2"
+	},
+	"1030": {
+		"Fname": "Jack",
+		"Lname": "Koh",
+		"Id": 1030,
+		"Dept": "D3"
+	},
+	"1050": {
+		"Fname": "Toby",
+		"Lname": "Ker",
+		"Id": 1010,
+		"Dept": "D1"
+	}
+}
