@@ -12,6 +12,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/dynamodb/types"
 )
 
 func main() {
@@ -40,10 +41,30 @@ func main() {
 
 	svc := dynamodb.NewFromConfig(cfg)
 
+	output, err := svc.Query(context.TODO(), &dynamodb.QueryInput{
+		TableName:                 new(string),
+		AttributesToGet:           []string{},
+		ConditionalOperator:       "",
+		ConsistentRead:            new(bool),
+		ExclusiveStartKey:         map[string]types.AttributeValue{},
+		ExpressionAttributeNames:  map[string]string{},
+		ExpressionAttributeValues: map[string]types.AttributeValue{":i": &types.AttributeValueMemberS{"1020"}},
+		FilterExpression:          new(string),
+		IndexName:                 new(string),
+		KeyConditionExpression:    aws.String("EID = :i"),
+		KeyConditions:             map[string]types.Condition{},
+		Limit:                     new(int32),
+		ProjectionExpression:      new(string),
+		QueryFilter:               map[string]types.Condition{},
+		ReturnConsumedCapacity:    "",
+		ScanIndexForward:          new(bool),
+		Select:                    "",
+	})
 	// Build the request with its input parameters
 	resp, err := svc.ListTables(context.TODO(), &dynamodb.ListTablesInput{
 		Limit: aws.Int32(5)})
 
+	fmt.Println("output:", output)
 	if err != nil {
 		log.Fatalf("failed to list tables, %v", err)
 	}
