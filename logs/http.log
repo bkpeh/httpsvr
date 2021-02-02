@@ -1726,3 +1726,15 @@ INFO: 2021/01/12 11:11:35 init:Start Log
 INFO: 2021/01/12 11:11:35 POST SUCCESS
 INFO: 2021/01/12 11:12:26 init:Start Log
 ERROR: 2021/01/12 11:12:26 TestIndex:Result not expected
+INFO: 2021/02/02 10:52:22 init:Start Log
+INFO: 2021/02/02 10:52:22 map[1005:{Jean Toh 1005 D5} 1010:{Peter Tan 1010 D1} 1015:{Jess Lim 1015 D4} 1020:{Mary Ong 1020 D2} 1030:{Jack Koh 1030 D3} 1070:{xxx yyy 1070 D1} 1080:{aaa bbb 1080 D1}]
+INFO: 2021/02/02 10:54:09 init:Start Log
+INFO: 2021/02/02 10:54:09 map[]
+INFO: 2021/02/02 10:54:09 init:Start Log
+INFO: 2021/02/02 10:54:09 index:GET:Not Found
+INFO: 2021/02/02 10:54:13 init:Start Log
+INFO: 2021/02/02 10:54:13 map[]
+INFO: 2021/02/02 10:54:13 init:Start Log
+INFO: 2021/02/02 10:54:13 index:GET:Not Found
+INFO: 2021/02/02 10:54:18 init:Start Log
+INFO: 2021/02/02 10:54:18 map[1010:{Peter Tan 1010 D1}]
