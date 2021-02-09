@@ -1,20 +1,21 @@
-package httpserver_test
+package httpserver
 
 import (
 	"bytes"
 	"encoding/json"
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"testing"
 
 	logging "github.com/bkpeh/httpsvr/util"
-	h "github.com/bkpeh/httpsvr/web"
 )
 
 var update = flag.Bool("update", false, "update .golden files")
@@ -27,12 +28,153 @@ type test struct {
 	httpcode int
 }
 
+func TestReadjson(t *testing.T) {
+	expect := map[string]emp{
+		"1005": {"Jean", "Toh", 1005, "D5"},
+		"1010": {"Peter", "Tan", 1010, "D1"},
+		"1015": {"Jess", "Lim", 1015, "D4"},
+		"1020": {"Mary", "Ong", 1020, "D2"},
+		"1030": {"Jack", "Koh", 1030, "D3"},
+		"1070": {"xxx", "yyy", 1070, "D1"},
+		"1080": {"aaa", "bbb", 1080, "D1"},
+	}
+
+	result := readjson()
+
+	equal := reflect.DeepEqual(expect, result)
+
+	if !equal {
+		t.Error("Readjson data mismatch")
+	}
+}
+
+func TestReadinfo(t *testing.T) {
+	//T1: To test with 1 item
+	expect := map[string]emp{
+		"1010": {"Peter", "Tan", 1010, "D1"},
+	}
+
+	input := url.Values{
+		"Id": {"1010"},
+	}
+	SetLog("logs/test.log")
+	result := readinfo(input)
+	equal := reflect.DeepEqual(expect, result)
+
+	if !equal {
+		t.Error("T1:Readinfo data mismatch")
+	}
+
+	//T2: To test with full set of data
+	expect = map[string]emp{
+		"1005": {"Jean", "Toh", 1005, "D5"},
+		"1010": {"Peter", "Tan", 1010, "D1"},
+		"1015": {"Jess", "Lim", 1015, "D4"},
+		"1020": {"Mary", "Ong", 1020, "D2"},
+		"1030": {"Jack", "Koh", 1030, "D3"},
+		"1070": {"xxx", "yyy", 1070, "D1"},
+		"1080": {"aaa", "bbb", 1080, "D1"},
+	}
+
+	result = readinfo(url.Values{})
+
+	equal = reflect.DeepEqual(expect, result)
+
+	if !equal {
+		t.Error("T2:Readinfo data mismatch")
+	}
+}
+
+func TestDeleteinfo(t *testing.T) {
+	//T1: To test delete 1 item (byte input case)
+	expect := http.StatusNoContent
+	data := map[string]emp{
+		"1070": {"xxx", "yyy", 1070, "D1"},
+	}
+
+	input, _ := json.MarshalIndent(data, "", " ")
+	result := deleteinfo(input)
+
+	if expect != result {
+		t.Errorf("T1:Deleteinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+
+	//T2: To test delete non existing item (byte input case)
+	expect = http.StatusNotFound
+	data = map[string]emp{
+		"1075": {"xxx", "yyy", 1070, "D1"},
+	}
+
+	input, _ = json.MarshalIndent(data, "", " ")
+	result = deleteinfo(input)
+
+	if expect != result {
+		t.Errorf("T2:Deleteinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+
+	//T3: To test delete 1 item (url.Value input case)
+	expect = http.StatusNoContent
+	dataT3 := url.Values{
+		"Id": {"1080"},
+	}
+
+	result = deleteinfo(dataT3)
+
+	if expect != result {
+		t.Errorf("T3:Deleteinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+
+	//T4: To test delete non existing item (url.Value input case)
+	expect = http.StatusNotFound
+	dataT4 := url.Values{
+		"Id": {"1085"},
+	}
+
+	result = deleteinfo(dataT4)
+
+	if expect != result {
+		t.Errorf("T4:Deleteinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+}
+
+func TestUpdateinfo(t *testing.T) {
+	//T1: To test create item
+	expect := http.StatusCreated
+	data := map[string]emp{
+		"1070": {"xxx", "yyy", 1070, "D2"},
+		"1080": {"aaa", "bbb", 1080, "D2"},
+	}
+
+	input, _ := json.MarshalIndent(data, "", " ")
+
+	result := updateinfo(input)
+
+	if expect != result {
+		t.Errorf("T1:Updateinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+
+	//T2: To test update item
+	expect = http.StatusOK
+	data = map[string]emp{
+		"1070": {"xxx", "yyy", 1070, "D1"},
+		"1080": {"aaa", "bbb", 1080, "D1"},
+	}
+
+	input, _ = json.MarshalIndent(data, "", " ")
+
+	result = updateinfo(input)
+
+	if expect != result {
+		t.Errorf("T2:Updateinfo unexpected result. Expect:%d, Result:%d", expect, result)
+	}
+}
+
 func TestIndex(t *testing.T) {
 	testtable := []test{
 		{testname: "test1", method: "GET", header: "", body: "", httpcode: http.StatusOK},
 		{testname: "test2", method: "GET", header: "", body: "../test/t2bodyinput.json", httpcode: http.StatusOK},
 		{testname: "test3", method: "POST", header: "", body: "../test/t3bodyinput.json", httpcode: http.StatusOK},
-		{testname: "test4", method: "POST", header: "../test/t4bodyinput.json", body: "../test/t4bodyinput.json", httpcode: http.StatusOK},
+		{testname: "test4", method: "POST", header: "../test/t4headinput.json", body: "", httpcode: http.StatusOK},
 		//{testname: "PUT"},
 		//{testname: "DELETE"},
 	}
@@ -47,27 +189,23 @@ func TestIndex(t *testing.T) {
 			//For request header
 			if v.header != "" {
 				hinput := struct {
-					id    url.Values
-					auth  string
-					ctype string
+					Ids   url.Values
+					Auth  string
+					Ctype string
 				}{}
+
 				expect, _ := ioutil.ReadFile(v.header)
 
-				json.Unmarshal(expect, &hinput)
-				req = httptest.NewRequest("POST", "http://localhost:8080/", strings.NewReader(hinput.id.Encode()))
-				req.Header.Add("Authorization", hinput.auth)
-				req.Header.Add("Content-Type", hinput.ctype)
-				req.Header.Add("Content-Length", strconv.Itoa(len(hinput.id)))
-				//urlstr := url.Values{}
+				err := json.Unmarshal(expect, &hinput)
 
-				//for i, v := range hinput {
-				// if v.(Type) == []string {
+				if err != nil {
+					fmt.Println("Marshal Error", err)
+				}
 
-				//}
-				//urlstr.Add(i, v)
-				//}
-
-				//req.URL.RawQuery = urlstr.Encode()
+				req = httptest.NewRequest(v.method, "http://localhost:8080/", strings.NewReader(hinput.Ids.Encode()))
+				req.Header.Add("Authorization", hinput.Auth)
+				req.Header.Add("Content-Type", hinput.Ctype)
+				req.Header.Add("Content-Length", strconv.Itoa(len(hinput.Ids)))
 			}
 
 			//For request body
@@ -79,8 +217,10 @@ func TestIndex(t *testing.T) {
 				req.URL.RawQuery = param.Encode()
 			}
 
-			h.SetLog("logs/test.log")
-			h.Index(rec, req)
+			logging.LogInfo("logs/test.log", req)
+
+			SetLog("logs/test.log")
+			Index(rec, req)
 			result, _ := ioutil.ReadAll(rec.Body)
 
 			//Update Golden File

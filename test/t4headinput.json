@@ -1,5 +1,7 @@
 {
-	"Id": ["1010", "1015"]
-	"Authorization" : "auth_token=\"XXXXXXX\""
-	"Content-Type" : "application/x-www-form-urlencoded"
+	"Ids": {
+	"Id" : ["1010", "1015"]
+	},
+	"Auth" : "auth_token=\"XXXXXXX\"",
+	"Ctype" : "application/x-www-form-urlencoded"
 }

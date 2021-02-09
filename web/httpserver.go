@@ -2,7 +2,6 @@ package httpserver
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -20,11 +19,12 @@ type emp struct {
 
 var logpath string
 
+//SetLog set the log file path
 func SetLog(path string) {
 	logpath = path
 }
 
-//Read from JSON file
+//Readjson to Read from JSON file
 func readjson() map[string]emp {
 	rawlist := map[string]emp{}
 
@@ -59,7 +59,6 @@ func readinfo(q url.Values) map[string]emp {
 	}
 
 	logging.LogInfo(logpath, newlist)
-
 	return newlist
 }
 
@@ -89,6 +88,7 @@ func deleteinfo(a interface{}) int {
 
 			if ok {
 				delete(rawlist, i)
+				logging.LogInfo(logpath, "deleteinfo:Delete:"+i)
 				code = http.StatusNoContent
 			}
 		}
@@ -188,6 +188,7 @@ func updateinfo(by []byte) int {
 	return code
 }
 
+//Index is HTTP handler func
 func Index(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -208,7 +209,6 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 
 	case "POST":
-		fmt.Println("POST:", r)
 		if len(r.URL.Query()) > 0 || r.Header.Get("Content-type") == "application/x-www-form-urlencoded" {
 			r.ParseForm()
 			resp := readinfo(r.Form)
